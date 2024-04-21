@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluent-bit-config
+  namespace: kube-monitoring
+data:
+  fluent-bit.conf: |
+    [SERVICE]
+        Daemon Off
+        Flush 5
+        Log_Level info
+        Parsers_File /fluent-bit/etc/parsers.conf
+        Parsers_File /fluent-bit/etc/conf/custom_parsers.conf
+        HTTP_Server On
+        HTTP_Listen 0.0.0.0
+        HTTP_Port 2020
+        Health_Check On
+
+    @INCLUDE input-kubernetes.conf
+    @INCLUDE filters.conf
+    @INCLUDE outputs.conf
+
+  input-kubernetes.conf: |
+    [INPUT]
+        Name tail
+        Path /var/log/containers/*.log
+        multiline.parser docker, cri
+        Tag kube.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+
+    [INPUT]
+        Name systemd
+        Tag host.*
+        Systemd_Filter _SYSTEMD_UNIT=kubelet.service
+        Read_From_Tail On
+  filters.conf: |
+    [FILTER]
+        Name kubernetes
+        Match kube.*
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+        K8S-Logging.Exclude On
+
+    [FILTER]
+        Name nest
+        Match *
+        Operation nest
+        Wildcard *
+        Nest_under log   
+
+    [FILTER]
+        Name lua
+        Match *
+        Script /fluent-bit/scripts/functions.lua
+        Call set_fields
+
+  outputs.conf: |
+    [OUTPUT]
+        Name http
+        tls off
+        Match *        
+        Host clickhouse-service.default.svc.cluster.local
+        port 8123
+        URI /?query=INSERT+INTO+fluentbit.kube+FORMAT+JSONEachRow
+        format json_stream
+        json_date_key timestamp
+        json_date_format epoch    
+
+  functions.lua: |
+    function set_fields(tag, timestamp, record)
+      record['host'] = record['log']['kubernetes']['host']
+      record['log']['kubernetes']['host'] = nil
+      record['pod_name'] = record['log']['kubernetes']['pod_name']
+      record['log']['kubernetes']['pod_name'] = nil
+      return 2, timestamp, record
+    end  

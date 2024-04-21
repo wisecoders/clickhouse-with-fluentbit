@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpine-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alpine-shell
+  template:
+    metadata:
+      labels:
+        app: alpine-shell
+    spec:
+      containers:
+      - name: alpine
+        image: alpine
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          apk update && apk add curl;
+          sleep infinity;

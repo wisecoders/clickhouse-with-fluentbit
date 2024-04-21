@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Script to manage Kubernetes environments using Kustomize
+# This script requires an explicit application name and handles an optional environment name, defaulting to 'base'.
+
+KUBEZEN_DIR="/Users/muthu/clickhouse/kubernetes"
+
+function up() {
+    echo "Bringing up the $1 application in the $2 environment..."
+    kustomize build "${KUBEZEN_DIR}/overlays/$1/$2" | kubectl apply -f -
+}
+
+function down() {
+    echo "Bringing down the $1 application in the $2 environment..."
+    kustomize build "${KUBEZEN_DIR}/overlays/$1/$2" | kubectl delete -f -
+}
+
+if [ "$#" -lt 2 ]; then
+    echo "Error: Too few arguments provided."
+    echo "Usage: kubezen up|down application-name [environment-name]"
+    echo "Environment defaults to 'base' if not specified."
+    exit 1
+fi
+
+command=$1
+application=$2
+environment=${3:-base}  # Default to 'base' if no environment is provided
+
+if ! [[ "$command" =~ ^(up|down)$ ]]; then
+    echo "Invalid command: $command"
+    echo "Usage: kubezen up|down application-name [environment-name]"
+    exit 1
+fi
+
+if [[ -z "$application" ]]; then
+    echo "Error: No application name provided."
+    echo "Usage: kubezen up|down application-name [environment-name]"
+    exit 1
+fi
+
+case "$command" in
+    up|down)
+        $command $application $environment
+        ;;
+    *)
+        echo "This should not be reached, but just in case..."
+        exit 1
+        ;;
+esac
