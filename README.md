@@ -1,6 +1,6 @@
-# Simplified Kubernetes Logging with Fluentd and ClickHouse
+# Simplified Kubernetes Logging with Fluentbit and ClickHouse
 
-Logging plays a crucial role in understanding the behavior and performance of applications running in Kubernetes clusters. Leveraging Docker Desktop's Kubernetes functionality, along with Fluentd and ClickHouse, provides a streamlined approach to logging, offering quick setup and powerful analytics capabilities.
+Logging plays a crucial role in understanding the behavior and performance of applications running in Kubernetes clusters. Leveraging Docker Desktop's Kubernetes functionality, along with Fluentbit and ClickHouse, provides a streamlined approach to logging, offering quick setup and powerful analytics capabilities.
 
 ### Why ClickHouse?
 
@@ -12,7 +12,7 @@ ClickHouse is a columnar database management system optimized for high-performan
 
 **Compression and Storage Efficiency:** ClickHouse offers efficient data compression techniques, reducing storage requirements while maintaining query performance. This enables cost-effective long-term storage of log data, making it an ideal choice for retaining historical logs for compliance and auditing purposes.
 **SQL Interface: **ClickHouse provides a familiar SQL interface for querying log data, making it accessible to a wide range of users, including developers, data analysts, and DevOps engineers. Its rich SQL feature set allows for complex analytics, aggregations, and transformations, empowering users to derive meaningful insights from log data with ease.
-**Integration with Fluentd: **ClickHouse seamlessly integrates with Fluentd, a popular open-source log collector, allowing for efficient ingestion of log data from Kubernetes clusters. Fluentd can parse, filter, and forward logs to ClickHouse, providing a reliable pipeline for collecting and storing log data in real-time.
+**Integration with Fluentbit: **ClickHouse seamlessly integrates with Fluentbit, a popular open-source log collector, allowing for efficient ingestion of log data from Kubernetes clusters. Fluentbit can parse, filter, and forward logs to ClickHouse, providing a reliable pipeline for collecting and storing log data in real-time.
 
 ##### Initial Setup:
 #### What we need:
@@ -32,7 +32,7 @@ I'm utilizing Kustomize for deployment purposes. As such, I've developed a quick
 
 **ClickHouse:** This is our primary focus and the cornerstone of our deployment. While some may have reservations about deploying stateful sets in Kubernetes due to their inherent complexities, we've decided to embrace this challenge as an opportunity for learning and growth. ClickHouse is a powerful open-source column-oriented database management system capable of handling large volumes of data with exceptional speed and efficiency.
 
-**Fluentd:** Configuring Fluentd, a robust and flexible log forwarding and aggregation tool, requires careful attention to detail. Despite its complexity, Fluentd offers unparalleled capabilities for managing and analyzing log data within Kubernetes environments. We'll guide you through the step-by-step process of setting up Fluentd to ensure seamless integration with our deployment stack.
+**Fluentbit:** Configuring Fluentbit, a robust and flexible log forwarding and aggregation tool, requires careful attention to detail. Despite its complexity, Fluentbit offers unparalleled capabilities for managing and analyzing log data within Kubernetes environments. We'll guide you through the step-by-step process of setting up Fluentbit to ensure seamless integration with our deployment stack.
 
 **OverlaysAlpine:**
 Simplest setup among all. I have deployed it on the default namespace itself.
