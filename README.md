@@ -20,7 +20,7 @@ ClickHouse is a columnar database management system optimized for high-performan
 - kubectl
 - kustomize
 - Visual Studio Code (you can use your favorite)
-- https://infra.app/ - quickly view logs and/or https://github.com/MuhammedKalkan/OpenLens - quickly view definition of services / roles
+- https://infra.app/ quickly view logs and/or https://github.com/MuhammedKalkan/OpenLens - quickly view definition of services / roles
 
 I'm utilizing Kustomize for deployment purposes. As such, I've developed a quick utility kubezen to facilitate deploying and undeploying deployments. update your manifests directory.
 
